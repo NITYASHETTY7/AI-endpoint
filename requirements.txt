@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+pydantic
+google-generativeai==0.8.5
+python-jose[cryptography]==3.5.0
+
+#AIzaSyCIiuHlShq3oMdXN1RBiEB_5CtN2szzlZs
+#commands:
+#export GEMINI_API_KEY=your_actual_gemini_api_key_here(mustt)
+# curl -X POST "http://127.0.0.1:8000/chat" \  
+#      -H "Content-Type: application/json" \   
+ #     -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30" \
+   #   -d '{"prompt":"why sky blue?"}'
