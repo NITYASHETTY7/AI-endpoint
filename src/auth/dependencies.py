@@ -1,12 +1,12 @@
 from typing import Optional
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer ,OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 
 SECRET_KEY = "a-string-secret-at-least-256-bits-long" #to validate the token that it is not tampered with
 # This should be kept secret and not hardcoded in production code
 ALGORITHM = "HS256"
-
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 # OAuth2 scheme for token-based authentication
 #extract token from the request/HTTP header
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
