@@ -14,45 +14,25 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from typing import Optional
 
-from . import schemas, models           ##db
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
-
 app = FastAPI()                                                              #app initialization
 
 @app.get("/")                
 async def root():
    return {"message":"Welcome to the AI Endpoint,login and start chatting with AI!"}
 
-DATABASE_URL = os.getenv("MYSQL_URL")    ##db
-if not DATABASE_URL:
-    raise ValueError("MYSQL_URL environment variable not set")
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 #creating user endpoint and hashing password
 pwd_cxt = CryptContext(schemes=["bcrypt"], deprecated="auto") 
 @app.post("/users/register", response_model=schemas.ShowUser, tags=['Sign Up'])
-def register_user(request: schemas.User, db: SessionLocal = Depends(get_db)):  # Add db dependency
+def register_user(request: schemas.User):
     hashedPassword = pwd_cxt.hash(request.password)
-    db_user = models.User(name=request.name, email=request.email, password=hashedPassword)    # save to MySQL instead of in-memory lis
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return schemas.ShowUser(name=db_user.name, email=db_user.email)
-
+    new_user = schemas.User(id=request.id, name=request.name, email=request.email, password=hashedPassword)
+    users.append(new_user)
+    return schemas.ShowUser(name=new_user.name, email=new_user.email)
 
 # Token endpoint: authenticate against users list
 @app.post("/token")
-async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: SessionLocal = Depends(get_db)):  ##db
-    user = db.query(models.User).filter(models.User.name == form_data.username).first()                 ##db.
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    user = next((u for u in users if u.name == form_data.username), None)
     if not user or not pwd_cxt.verify(form_data.password, user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -97,20 +77,21 @@ from typing import List
 #get all users
 users: List[schemas.User] = []
 @app.get("/users",tags=['Sign Up'])
-async def get_all_users(db: SessionLocal = Depends(get_db)):  ##db
-    users = db.query(models.User).all() 
+async def get_all_users():
+    return {'all_users':users}
 
 
 @app.get("/users/{user_id}", response_model=schemas.ShowUser,tags=['Sign Up'])  # Endpoint to show user details
-def get_a_user(user_id: int, db: SessionLocal = Depends(get_db)):               ##db
-    user = db.query(models.User).filter(models.User.id == user_id).first()  
-    if not user:
-        return {"error": "User not found"}
-    return schemas.ShowUser(name=user.name, email=user.email)
+def get_a_user(user_id: int):
+    for user in users:
+        if user.id == user_id:
+            return schemas.ShowUser(name=user.name, email=user.email)
+    return {"error": "User not found"}
 
-
-##for deployment
+#for deployment
+import os
 import uvicorn
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run("main:app", host="0.0.0.0", port=port)
