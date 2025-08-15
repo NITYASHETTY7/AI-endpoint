@@ -42,7 +42,7 @@ pwd_cxt = CryptContext(schemes=["bcrypt"], deprecated="auto")
 @app.post("/users/register", response_model=schemas.ShowUser, tags=['Sign Up'])
 def register_user(request: schemas.User, db: SessionLocal = Depends(get_db)):  # Add db dependency
     hashedPassword = pwd_cxt.hash(request.password)
-   db_user = models.User(name=request.name, email=request.email, password=hashedPassword)    # save to MySQL instead of in-memory lis
+    db_user = models.User(name=request.name, email=request.email, password=hashedPassword)    # save to MySQL instead of in-memory lis
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
