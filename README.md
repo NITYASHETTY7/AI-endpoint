@@ -26,3 +26,10 @@ With authorization
     -d '{"prompt":"why sky is blue?"}'
 
 
+Deployment:
+Go to FastAPI deployment documentation and choose your deployment type,
+I chose Railway since it offers limited free credentials .
+
+Here's the public url of deployment.Register a user first then authorize later login
+
+     https://ai-endpoint-production.up.railway.app/docs
