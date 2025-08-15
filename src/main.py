@@ -20,7 +20,6 @@ app = FastAPI()                                                              #ap
 async def root():
    return {"message":"Welcome to the AI Endpoint,login and start chatting with AI!"}
 
-db_url = os.getenv("MYSQL_URL")  ##
 
 #creating user endpoint and hashing password
 pwd_cxt = CryptContext(schemes=["bcrypt"], deprecated="auto") 
