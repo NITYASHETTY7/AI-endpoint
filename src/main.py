@@ -87,3 +87,11 @@ def get_a_user(user_id: int):
         if user.id == user_id:
             return schemas.ShowUser(name=user.name, email=user.email)
     return {"error": "User not found"}
+
+#for deployment
+import os
+import uvicorn
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
