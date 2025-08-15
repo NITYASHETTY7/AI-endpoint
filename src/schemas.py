@@ -7,8 +7,6 @@ class User(BaseModel):
     email:str
     password:str
 
-    class Config:            ##db
-        orm_mode = True
         
 #showing only email and name
 class ShowUser(BaseModel):
